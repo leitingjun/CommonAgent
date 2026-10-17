@@ -1,0 +1,36 @@
+# ============================================
+# 开发环境配置 (dev profile)
+# 使用 H2 内存数据库，无需 MySQL/ES
+# 启动: mvn spring-boot:run -Dspring-boot.run.profiles=dev
+# ============================================
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:common_agent;DB_CLOSE_DELAY=-1;MODE=MySQL
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+  flyway:
+    enabled: false
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+
+elasticsearch:
+  enabled: false
+
+llm:
+  default:
+    api-key: ""
+
+logging:
+  level:
+    com.commonagent: DEBUG

@@ -1,0 +1,25 @@
+backend/target/
+target/
+frontend/node_modules/
+node_modules/
+frontend/dist/
+dist/
+storage/
+*.log
+*.iml
+.idea/
+.vscode/
+
+# 环境变量与密钥
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# OS
+.DS_Store
+Thumbs.db

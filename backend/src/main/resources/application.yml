@@ -1,0 +1,93 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: common-agent
+  datasource:
+    url: jdbc:mysql://localhost:3306/common_agent?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai&characterEncoding=utf8mb4
+    username: root
+    password: ${MYSQL_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 30000
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: ${REDIS_PASSWORD:}
+      timeout: 3000ms
+
+  # 文件上传配置
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+
+# Elasticsearch 配置
+elasticsearch:
+  enabled: false   # 默认关闭，生产环境设为 true
+  hosts:
+    - localhost:9200
+  username: ${ES_USERNAME:}
+  password: ${ES_PASSWORD:}
+  scheme: http
+  # 向量索引前缀，实际索引名为: {prefix}_{tenantId}
+  index-prefix: ca_knowledge
+
+# LLM 配置 (OpenAI 兼容接口)
+llm:
+  default:
+    provider: openai
+    api-key: ${LLM_API_KEY:}
+    base-url: ${LLM_BASE_URL:https://api.openai.com/v1}
+    model: gpt-4o
+    temperature: 0.7
+    max-tokens: 2048
+  # 支持多模型配置，可按租户覆盖
+  tenants: {}
+
+# Agent 工作流配置
+agent:
+  # 最大对话轮次
+  max-conversation-turns: 10
+  # 意图分类置信度阈值
+  intent-confidence-threshold: 0.75
+  # 情感分析 - 负面情绪阈值
+  sentiment-negative-threshold: 0.6
+  # 知识检索返回条数
+  knowledge-top-k: 5
+  # 知识检索相似度阈值
+  knowledge-similarity-threshold: 0.7
+  # 会话超时（分钟）
+  session-timeout-minutes: 30
+
+# 多租户配置
+tenant:
+  # 默认租户配置
+  default:
+    max-concurrent-sessions: 100
+    enable-knowledge-base: true
+    enable-human-handoff: true
+    enable-sentiment-analysis: true
+    industry: general
+
+# 日志
+logging:
+  level:
+    com.commonagent: DEBUG
+    org.springframework.web: INFO
